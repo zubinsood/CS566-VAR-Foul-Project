@@ -1,0 +1,19 @@
+# Ignore dataset
+mvfouls/
+SoccerNetData/
+*.mp4
+*.zip
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.env/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# OS junk
+.DS_Store
