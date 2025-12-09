@@ -3,6 +3,7 @@ mvfouls/
 SoccerNetData/
 *.mp4
 *.zip
+results/*.pth
 
 # Python cache files
 __pycache__/
