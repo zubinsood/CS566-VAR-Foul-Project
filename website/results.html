@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results & Code - VAR Foul</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">CS566 VAR Foul</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="proposal.html">Proposal</a>
+                <a href="midterm.html">Midterm Report</a>
+                <a href="results.html" class="active">Results & Code</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Results & Implementation</h1>
+
+        <!-- Source Code Download -->
+        <div class="card">
+            <h2>Source Code</h2>
+            <p>
+                Our complete source code includes data loaders, model definitions, and training scripts for both
+                Single-View and Multi-View baselines.
+            </p>
+            <a href="assets/CS566-VAR-Foul-Project.zip" class="btn" download>Download Project Zip</a>
+        </div>
+
+        <!-- Dataset Overview -->
+        <div class="card">
+            <h2>Dataset Overview</h2>
+            <p>
+                We use the <strong>SoccerNet MV-Foul dataset</strong>, which contains multi-view video clips of foul
+                events
+                from professional soccer matches. Each clip is labeled with:
+            </p>
+            <ul>
+                <li><strong>Foul Severity:</strong> No Offence, Offence + No Card, Yellow Card, or Red Card</li>
+                <li><strong>Foul Type:</strong> Tackling, Holding, Pushing, High Leg, Elbowing, etc.</li>
+            </ul>
+
+            <h3>Sample Foul Clips (Multi-View)</h3>
+
+            <!-- Interactive Video Player -->
+            <div style="background: rgba(0,0,0,0.2); border-radius: 1rem; padding: 1.5rem; margin: 1rem 0;">
+                <!-- Event Selector -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span style="color: var(--text-secondary); margin-right: 0.5rem; align-self: center;">Event:</span>
+                    <button onclick="selectEvent('A')" id="eventA" class="selector-btn active"
+                        style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--accent-color); background: var(--accent-color); color: white; cursor: pointer; font-weight: 600;">Event
+                        A</button>
+                    <button onclick="selectEvent('B')" id="eventB" class="selector-btn"
+                        style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer; font-weight: 600;">Event
+                        B</button>
+                    <button onclick="selectEvent('C')" id="eventC" class="selector-btn"
+                        style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer; font-weight: 600;">Event
+                        C</button>
+                </div>
+
+                <!-- View Selector -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span style="color: var(--text-secondary); margin-right: 0.5rem; align-self: center;">View:</span>
+                    <button onclick="selectView(1)" id="view1" class="view-btn active"
+                        style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--accent-color); background: var(--accent-color); color: white; cursor: pointer;">View
+                        1</button>
+                    <button onclick="selectView(2)" id="view2" class="view-btn"
+                        style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer;">View
+                        2</button>
+                    <button onclick="selectView(3)" id="view3" class="view-btn"
+                        style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer;">View
+                        3</button>
+                </div>
+
+                <!-- Big Video Player -->
+                <video id="mainVideo" controls autoplay loop muted
+                    style="width: 100%; max-width: 800px; border-radius: 0.75rem; border: 2px solid var(--border-color);">
+                    <source id="videoSource" src="assets/action0_view1.mp4" type="video/mp4">
+                </video>
+
+                <p id="videoLabel"
+                    style="text-align: center; margin-top: 0.75rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    Showing: Event A — Camera View 1
+                </p>
+            </div>
+
+            <script>
+                let currentEvent = 'A';
+                let currentView = 1;
+
+                const videoMap = {
+                    'A': {
+                        1: 'assets/action106_view1.mp4',
+                        2: 'assets/action106_view2.mp4',
+                        3: 'assets/action106_view3.mp4'
+                    },
+                    'B': {
+                        1: 'assets/action101_view1.mp4',
+                        2: 'assets/action101_view2.mp4',
+                        3: 'assets/action101_view3.mp4'
+                    },
+                    'C': {
+                        1: 'assets/action0_view1.mp4',
+                        2: 'assets/action0_view2.mp4',
+                        3: 'assets/action0_view3.mp4'
+                    }
+                };
+
+                function updateVideo() {
+                    const video = document.getElementById('mainVideo');
+                    const source = document.getElementById('videoSource');
+                    const label = document.getElementById('videoLabel');
+
+                    source.src = videoMap[currentEvent][currentView];
+                    video.load();
+                    video.play();
+
+                    label.textContent = `Showing: Event ${currentEvent} — Camera View ${currentView}`;
+                }
+
+                function selectEvent(event) {
+                    currentEvent = event;
+
+                    document.getElementById('eventA').style.background = event === 'A' ? 'var(--accent-color)' : 'transparent';
+                    document.getElementById('eventA').style.color = event === 'A' ? 'white' : 'var(--text-secondary)';
+                    document.getElementById('eventA').style.borderColor = event === 'A' ? 'var(--accent-color)' : 'var(--border-color)';
+
+                    document.getElementById('eventB').style.background = event === 'B' ? 'var(--accent-color)' : 'transparent';
+                    document.getElementById('eventB').style.color = event === 'B' ? 'white' : 'var(--text-secondary)';
+                    document.getElementById('eventB').style.borderColor = event === 'B' ? 'var(--accent-color)' : 'var(--border-color)';
+
+                    document.getElementById('eventC').style.background = event === 'C' ? 'var(--accent-color)' : 'transparent';
+                    document.getElementById('eventC').style.color = event === 'C' ? 'white' : 'var(--text-secondary)';
+                    document.getElementById('eventC').style.borderColor = event === 'C' ? 'var(--accent-color)' : 'var(--border-color)';
+
+                    updateVideo();
+                }
+
+                function selectView(view) {
+                    currentView = view;
+
+                    for (let i = 1; i <= 3; i++) {
+                        const btn = document.getElementById('view' + i);
+                        btn.style.background = i === view ? 'var(--accent-color)' : 'transparent';
+                        btn.style.color = i === view ? 'white' : 'var(--text-secondary)';
+                        btn.style.borderColor = i === view ? 'var(--accent-color)' : 'var(--border-color)';
+                    }
+
+                    updateVideo();
+                }
+            </script>
+        </div>
+
+        <!-- Single-View Results -->
+        <div class="card">
+            <h2>1. Single-View Baseline (ResNet18)</h2>
+            <p>
+                Our first baseline uses a pretrained ResNet18 backbone to process 16 frames from a single camera view.
+            </p>
+            <ul>
+                <li><strong>Train samples:</strong> 1000</li>
+                <li><strong>Validation samples:</strong> 300</li>
+                <li><strong>Frames per clip:</strong> 16</li>
+                <li><strong>Batch size:</strong> 4</li>
+                <li><strong>Epochs:</strong> 5</li>
+            </ul>
+
+            <h3>Validation Loss Over Epochs</h3>
+            <div class="chart-container" style="margin-bottom: 2rem;">
+                <canvas id="lossChart"></canvas>
+            </div>
+
+            <h3>Performance Metrics</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Epoch</th>
+                        <th>Val Loss</th>
+                        <th>Severity BalAcc</th>
+                        <th>Foul Type BalAcc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>3.0287</td>
+                        <td>0.2430</td>
+                        <td>0.0855</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>3.1253</td>
+                        <td>0.2913</td>
+                        <td>0.0884</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>3.2278</td>
+                        <td>0.2864</td>
+                        <td>0.0900</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>The model begins overfitting after epoch 3, so we use epochs 1–3 as the clean single-view baseline.</p>
+        </div>
+
+        <!-- Multi-View Results -->
+        <div class="card">
+            <h2>2. Multi-View Baseline (2-View Fusion)</h2>
+            <p>
+                The multi-view baseline extends the single-view architecture by processing <strong>2 synchronized camera
+                    views</strong>
+                per foul event and averaging their features before classification.
+            </p>
+            <ul>
+                <li><strong>Views per action:</strong> 2</li>
+                <li><strong>Frames per view:</strong> 16</li>
+                <li><strong>Train samples:</strong> 1000</li>
+                <li><strong>Validation samples:</strong> 300</li>
+                <li><strong>Batch size:</strong> 2</li>
+                <li><strong>Epochs:</strong> 3</li>
+            </ul>
+
+            <h3>Foul Type Accuracy Comparison</h3>
+            <div class="chart-container" style="margin-bottom: 2rem;">
+                <canvas id="accChart"></canvas>
+            </div>
+
+            <h3>Performance Metrics</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Epoch</th>
+                        <th>Val Loss</th>
+                        <th>Severity BalAcc</th>
+                        <th>Foul Type BalAcc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>3.2196</td>
+                        <td>0.2383</td>
+                        <td>0.0810</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>3.1427</td>
+                        <td>0.2737</td>
+                        <td>0.0928</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>2.9233</td>
+                        <td>0.2548</td>
+                        <td>0.1091</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                <strong>Key finding:</strong> The multi-view baseline achieves <strong>~21% better foul-type
+                    accuracy</strong>
+                (0.1091 vs 0.0900) compared to single-view by epoch 3, validating the benefit of multiple camera angles.
+            </p>
+        </div>
+
+        <!-- Methodology -->
+        <div class="card">
+            <h2>Methodology</h2>
+
+            <h3>Data Pipeline</h3>
+            <div class="image-gallery" style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0;">
+                <img src="assets/soccer_frame1.jpg" alt="Frame 1"
+                    style="flex: 1; min-width: 30%; max-height: 150px; object-fit: cover; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                <img src="assets/soccer_frame2.jpg" alt="Frame 2"
+                    style="flex: 1; min-width: 30%; max-height: 150px; object-fit: cover; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                <img src="assets/soccer_frame3.jpg" alt="Frame 3"
+                    style="flex: 1; min-width: 30%; max-height: 150px; object-fit: cover; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+            </div>
+            <ol>
+                <li><strong>Load Video:</strong> Read multi-view .mp4 clips using PyAV</li>
+                <li><strong>Sample Frames:</strong> Uniformly sample 16 frames per clip</li>
+                <li><strong>Extract Features:</strong> Pass through ResNet18 backbone</li>
+                <li><strong>Fuse Views:</strong> (Multi-view only) Average features across views</li>
+                <li><strong>Classify:</strong> Two heads predict severity (4 classes) and type (8+ classes)</li>
+            </ol>
+
+            <h3>Architecture</h3>
+            <p>
+                Both models use a shared ResNet18 backbone pretrained on ImageNet. The backbone outputs a
+                512-dimensional
+                feature vector per clip, which is fed into two separate classification heads.
+            </p>
+        </div>
+
+        <!-- How to Run -->
+        <div class="card">
+            <h2>How to Run</h2>
+            <p>All scripts are in the <code>code/</code> and <code>scripts/</code> directories.</p>
+
+            <h3>1. Download Dataset</h3>
+            <pre><code># Sign the SoccerNet NDA first: https://www.soccer-net.org/data
+pip install SoccerNet
+python3 scripts/download_train.py
+python3 scripts/download_valid.py</code></pre>
+
+            <h3>2. Train Single-View Baseline</h3>
+            <pre><code>python3 code/train_baseline.py \
+  --data_root "/path/to/SoccerNetData/mvfouls" \
+  --epochs 5 \
+  --batch_size 4 \
+  --num_frames 16 \
+  --use_pretrained</code></pre>
+
+            <h3>3. Train Multi-View Baseline</h3>
+            <pre><code>python3 code/train_multiview.py \
+  --data_root "/path/to/SoccerNetData/mvfouls" \
+  --epochs 3 \
+  --batch_size 2 \
+  --num_views 2 \
+  --use_pretrained</code></pre>
+        </div>
+    </main>
+
+    <footer>
+        <p></p>
+    </footer>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="charts.js"></script>
+</body>
+
+</html>

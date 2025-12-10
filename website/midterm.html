@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midterm Report - VAR Foul</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">CS566 VAR Foul</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="proposal.html">Proposal</a>
+                <a href="midterm.html" class="active">Midterm Report</a>
+                <a href="results.html">Results & Code</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Mid-Term Report</h1>
+
+        <div class="card">
+            <h2>Current Progress</h2>
+            <p>
+                Since submitting our proposal, we have focused on understanding the SoccerNet MV-Foul dataset and
+                setting up the baseline multi-view model provided by the challenge organizers. The dataset includes
+                short, multi-angle video clips labeled with both foul severity (No Card, Yellow, Red, etc.) and foul
+                type (e.g., Pushing, Holding).
+            </p>
+            <p>We have successfully:</p>
+            <ul>
+                <li>Reviewed the dataset structure and verified the annotation format.</li>
+                <li>Cleaned/verified the existing dataset, ensuring that the clips are accurate.</li>
+                <li>Configured our development environment (Github, PyTorch, TorchVision, and SoccerNet utilities).</li>
+                <li>Implemented and tested the baseline model, MVNetwork, which uses a 3D convolutional backbone
+                    (R(2+1)D-18, S3D, or MViT-V2-S) combined with a multi-view aggregation layer (MVAggregate).</li>
+                <li>Validated that the model can process dummy multi-view input clips and produce consistent output
+                    shapes, confirming that the architecture and dependencies are functioning correctly.</li>
+            </ul>
+            <p>
+                At this stage, we are preparing the dataset preprocessing pipeline and expect to begin baseline training
+                during the first week of November.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Challenges</h2>
+            <ul>
+                <li><strong>Dataset Scale and Access:</strong> The SoccerNet MV-Foul dataset is large (tens of GBs/3000+
+                    videos), and downloading and organizing the synchronized multi-view videos took longer than
+                    expected.</li>
+                <li><strong>Baseline Code Complexity:</strong> The official repository combines multiple tasks (foul
+                    detection, spotting, and classification), which made it challenging to isolate/understand the actual
+                    logic that relates to the foul detection.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Changes</h2>
+            <p>
+                Our original plan included both multi-view model and pose-based features. Based on current progress, we
+                are slightly adjusting priorities, focus mainly on improving the multi-view model until we get a decent
+                evaluation score and then modify it later.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Evaluation</h2>
+            <p>
+                We will evaluate our models using the official SoccerNet MV-Foul recognition metrics, which are
+                integrated directly into the SoccerNet Python package and supported by the EvalAI evaluation server.
+            </p>
+
+            <h3>1. Foul Severity (4 classes)</h3>
+            <ul>
+                <li>No Offence</li>
+                <li>Offence + No Card</li>
+                <li>Offence + Yellow Card</li>
+                <li>Offence + Red Card</li>
+            </ul>
+            <p>The evaluation metric for this task is balanced accuracy, which accounts for class imbalance.</p>
+
+            <h3>2. Foul Type (8 classes)</h3>
+            <ul>
+                <li>Tackling, Standing Tackling, High Leg, Holding, Pushing, Elbowing, Challenge, and Dive.</li>
+            </ul>
+            <p>This task also uses balanced accuracy as the primary metric.</p>
+
+            <p>
+                We determined that using the official evaluation functions from the SoccerNet package will provide the
+                most reliable and reproducible assessment of our model’s progress. During our baseline experiments, we
+                will compute balanced accuracy for both tasks on the validation set, followed by test submission through
+                EvalAI for leaderboard comparison.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p></p>
+    </footer>
+</body>
+
+</html>

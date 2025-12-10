@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Proposal - VAR Foul</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">CS566 VAR Foul</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="proposal.html" class="active">Proposal</a>
+                <a href="midterm.html">Midterm Report</a>
+                <a href="results.html">Results & Code</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Project Proposal</h1>
+
+        <div class="card">
+            <h2>1. Problem Statement</h2>
+            <p>
+                We aim to build a computer vision system that can assist referees by automatically recognizing fouls in
+                soccer matches. Specifically, using the SoccerNet MV-Foul dataset, the task is to classify video
+                segments into categories such as No Offence, Offence + No Card, Offence + Yellow Card, Offence + Red
+                Card, and further predict the type of foul (e.g., Standing Tackle, Holding, Pushing).
+            </p>
+            <p>
+                Our project will explore multi-view video learning techniques to improve robustness and accuracy, since
+                referees often use multiple camera angles to make fairer decisions. We want it to be accurate enough to
+                detect fouls, based on in-game footage from multiple angles.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>2. Importance and Motivation</h2>
+            <p>
+                Foul recognition is a critical challenge in soccer officiating. Human referees are prone to error, and
+                controversial calls can alter the outcome of high-stakes matches. With the introduction of Video
+                Assistant Referee (VAR) technology, there is both opportunity and demand for more reliable automated
+                systems.
+            </p>
+            <p>
+                From a research perspective, this problem involves action recognition, multi-view learning, and
+                fine-grained classification—core challenges in computer vision. We are motivated by the potential
+                real-world impact on fairness in sports as well as the chance to contribute to a cutting-edge benchmark
+                dataset. We also have a general interest in soccer and would enjoy working with the topic.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>3. Current State-of-the-Art</h2>
+            <p>
+                The SoccerNet MV-Foul challenge has been addressed in recent papers using 3D convolutional neural
+                networks, spatio-temporal attention, and multimodal fusion of multi-view features. Baseline models
+                provided by the dataset organizers use Inflated 3D ConvNets (I3D) and ResNet backbones, while stronger
+                methods explore transformer architectures or contrastive learning across views. Performance remains
+                challenging, particularly for distinguishing between foul categories with subtle differences in motion
+                and contact type.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>4. Approach</h2>
+            <p>
+                We plan to start by re-implementing one of the baseline multi-view models (e.g., I3D with feature
+                fusion), to ensure we understand the pipeline and dataset. Building on that, we will propose a new
+                approach leveraging attention-based fusion across views—allowing the model to weigh more informative
+                camera angles dynamically. Additionally, we may explore pose-based features (via YOLOv8 pose or
+                OpenPose) as auxiliary inputs to improve foul type classification.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>5. Why a New Approach?</h2>
+            <p>
+                Existing models often perform late fusion of features or average predictions across views, which may
+                dilute critical information. For example, in some fouls, only one angle reveals clear contact.
+                Attention-based fusion could selectively prioritize views, improving classification. Adding pose cues
+                could also help capture body contact patterns that raw RGB frames miss. We believe combining multi-view
+                attention with pose information will outperform simple fusion baselines.
+            </p>
+            <p>
+                Also, there are not many VAR models available for use by the public or those that are easily accessible.
+                This could be useful for recreational soccer teams, smaller leagues, or youth competitions that do not
+                have access to legitimate FIFA grade VAR models. Depending on the scope of the project we could ship a
+                working front end UI or add additional data points to the data by manually scraping and labeling fouls
+                to include in the dataset.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>6. Evaluation and Timeline</h2>
+            <p>
+                We will evaluate our models on the official SoccerNet MV-Foul challenge metrics, reporting
+                classification accuracy, F1-score, and confusion matrices for both foul severity and foul type.
+                Comparisons will be made between baseline replication, our attention-based fusion, and our fusion + pose
+                approach. We will also visualize results with video examples to illustrate strengths and failure cases.
+            </p>
+
+            <h3>Sample Timeline</h3>
+            <ul>
+                <li><strong>Oct 1 – Oct 18:</strong> Implement and train baseline multi-view model; evaluate results.
+                </li>
+                <li><strong>Oct 19 – Oct 30:</strong> Refine baseline experiments; prepare and submit mid-term report.
+                </li>
+                <li><strong>Oct 31 – Nov 20:</strong> Develop and test new approach (multi-view attention fusion + pose
+                    features).</li>
+                <li><strong>Nov 21 – Dec 1:</strong> Run comparisons, finalize experiments, and prepare visualizations.
+                </li>
+                <li><strong>Dec 2 – Dec 11:</strong> Present project in class and assemble final project webpage with
+                    code, results, and discussion.</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p></p>
+    </footer>
+</body>
+
+</html>

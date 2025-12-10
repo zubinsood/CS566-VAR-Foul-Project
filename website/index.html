@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS566 VAR Foul Project</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">CS566 VAR Foul</div>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="proposal.html">Proposal</a>
+                <a href="midterm.html">Midterm Report</a>
+                <a href="results.html">Results & Code</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>VAR Foul Recognition</h1>
+            <p>Automated Multi-View Soccer Foul Classification using Deep Learning</p>
+            <div style="margin-top: 2rem;">
+                <a href="proposal.html" class="btn">Read Proposal</a>
+                <a href="results.html" class="btn"
+                    style="background-color: var(--surface-color); border: 1px solid var(--border-color); margin-left: 1rem;">View
+                    Results</a>
+            </div>
+        </section>
+
+        <!-- Dataset Preview Section -->
+        <section class="card">
+            <h2>The Dataset: SoccerNet MV-Foul</h2>
+            <p>
+                Our system is trained on the <strong>SoccerNet Multi-View Foul Recognition</strong> dataset,
+                which contains thousands of video clips from professional soccer matches captured from multiple camera
+                angles.
+            </p>
+            <div style="display: flex; gap: 0.5rem; overflow-x: auto; margin: 1.5rem 0; padding-bottom: 0.5rem;">
+                <video controls muted loop autoplay
+                    style="width: 280px; flex-shrink: 0; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                    <source src="assets/action0_view1.mp4" type="video/mp4">
+                </video>
+                <video controls muted loop autoplay
+                    style="width: 280px; flex-shrink: 0; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                    <source src="assets/action0_view2.mp4" type="video/mp4">
+                </video>
+                <video controls muted loop autoplay
+                    style="width: 280px; flex-shrink: 0; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                    <source src="assets/action0_view3.mp4" type="video/mp4">
+                </video>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                <em>Above: The same foul event captured from three different camera angles. Our multi-view model fuses
+                    information from multiple views to improve classification accuracy.</em>
+            </p>
+        </section>
+
+        <!-- Problem Statement Section -->
+        <section class="card">
+            <h2>The Problem</h2>
+            <p>
+                In soccer, referees must make split-second decisions about fouls. With the introduction of
+                <strong>Video Assistant Referee (VAR)</strong>, multiple camera angles are reviewed to make fairer
+                calls.
+                Our goal is to <strong>automate this process</strong> using computer vision.
+            </p>
+            <h3>Classification Tasks</h3>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1rem;">
+                <div style="flex: 1; min-width: 200px;">
+                    <h4 style="color: var(--accent-color); margin-bottom: 0.5rem;">Foul Severity (4 classes)</h4>
+                    <ul style="margin: 0;">
+                        <li>No Offence</li>
+                        <li>Offence + No Card</li>
+                        <li>Offence + Yellow Card</li>
+                        <li>Offence + Red Card</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <h4 style="color: var(--accent-color); margin-bottom: 0.5rem;">Foul Type (8+ classes)</h4>
+                    <ul style="margin: 0;">
+                        <li>Tackling</li>
+                        <li>Standing Tackling</li>
+                        <li>High Leg</li>
+                        <li>Holding, Pushing, Elbowing...</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Approach Section -->
+        <section class="card">
+            <h2>Our Approach</h2>
+            <div class="image-gallery" style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 1.5rem 0;">
+                <img src="assets/soccer_frame1.jpg" alt="Camera View 1"
+                    style="flex: 1; min-width: 30%; max-height: 180px; object-fit: cover; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                <img src="assets/soccer_frame2.jpg" alt="Camera View 2"
+                    style="flex: 1; min-width: 30%; max-height: 180px; object-fit: cover; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                <img src="assets/soccer_frame3.jpg" alt="Camera View 3"
+                    style="flex: 1; min-width: 30%; max-height: 180px; object-fit: cover; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+            </div>
+            <p>
+                We implemented two baseline models to classify fouls from video clips:
+            </p>
+            <ol>
+                <li><strong>Single-View Baseline:</strong> A ResNet18 backbone that processes 16 frames from a single
+                    camera view.</li>
+                <li><strong>Multi-View Baseline:</strong> Extends the single-view model to fuse features from 2
+                    synchronized camera views, improving foul type classification.</li>
+            </ol>
+            <p>
+                The multi-view approach showed <strong>improved foul-type balanced accuracy</strong> compared to
+                single-view,
+                supporting the idea that multiple camera angles provide more information for classifying fouls.
+            </p>
+        </section>
+
+        <!-- Team Section -->
+        <section class="card">
+            <h2>Team Members</h2>
+            <ul>
+                <li><strong>Zubin Sood</strong></li>
+                <li><strong>Rithvik Banda</strong></li>
+                <li><strong>Jamil Kazimzade</strong></li>
+            </ul>
+        </section>
+
+        <!-- Quick Links -->
+        <section class="card">
+            <h2>Quick Links</h2>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="proposal.html" class="btn">Proposal</a>
+                <a href="midterm.html" class="btn"
+                    style="background-color: var(--surface-color); border: 1px solid var(--border-color);">Midterm
+                    Report</a>
+                <a href="results.html" class="btn"
+                    style="background-color: var(--surface-color); border: 1px solid var(--border-color);">Results &
+                    Code</a>
+                <a href="https://www.soccer-net.org/tasks/multi-view-foul-recognition" target="_blank" class="btn"
+                    style="background-color: var(--surface-color); border: 1px solid var(--border-color);">SoccerNet
+                    Dataset</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p></p>
+    </footer>
+</body>
+
+</html>
