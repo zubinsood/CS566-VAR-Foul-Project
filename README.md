@@ -6,12 +6,11 @@ Our work includes:
 
 - dataset preprocessing  
 - a complete **single-view baseline** (ResNet18)  
+- a full **multi-view fusion baseline** (2-view average fusion)  
 - training & evaluation pipeline  
 - utilities for inspecting annotations  
-- model checkpoints  
-- project website summarizing our results  
-
-Later in the project, we extend this to a **multi-view fusion model**.
+- result logs  
+- a final project website  
 
 ---
 
@@ -19,26 +18,33 @@ Later in the project, we extend this to a **multi-view fusion model**.
 
     CS566-VAR-Foul-Project/
     │
-    ├── code/                       # Dataset, model, training, debugging scripts
-    │   ├── mvfoul_dataset.py       # Single-view dataset loader
-    │   ├── mvfoul_model.py         # Single-view baseline model
-    │   ├── train_baseline.py       # Training script
-    │   ├── test_dataset.py         # Sanity check for dataset loading
-    │   ├── test_model_shapes.py    # Sanity check for model forward pass
-    │   ├── inspect_annotations.py  # Annotation structure inspector
+    ├── code/
+    │   ├── mvfoul_dataset.py               # Single-view dataset
+    │   ├── mvfoul_model.py                 # Single-view model
+    │   ├── train_baseline.py               # Train single-view model
+    │   ├── mvfoul_multiview_dataset.py     # Multi-view dataset
+    │   ├── mvfoul_multiview_model.py       # Multi-view fusion model
+    │   ├── train_multiview.py              # Train multi-view model
+    │   ├── test_dataset.py                 # Single-view dataset check
+    │   ├── test_model_shapes.py            # Single-view model check
+    │   ├── test_multiview_dataset.py       # Multi-view dataset check
+    │   ├── test_multiview_model_shapes.py  # Multi-view model check
+    │   ├── inspect_annotations.py          # Annotation inspector
     │   └── ...
     │
-    ├── scripts/                    # Utility scripts (no training)
+    ├── scripts/
     │   ├── download_train.py
     │   ├── download_valid.py
     │   └── ...
     │
-    ├── results/                    # Saved checkpoints, logs, future plots
-    │   └── baseline_best.pth
+    ├── results/
+    │   ├── baseline_run1.md
+    │   ├── multiview_run1.md
+    │   └── (model checkpoints ignored by git)
     │
-    ├── figures/                    # Plots + images for final webpage
+    ├── figures/          # Plots / visualizations
     │
-    ├── website/                    # Final project webpage (index.html + assets)
+    ├── website/          # Final project webpage
     │
     ├── README.md
     └── .gitignore
@@ -47,88 +53,79 @@ Later in the project, we extend this to a **multi-view fusion model**.
 
 ## 👥 Team Members
 
-**Zubin Sood**  
-**Rithvik Banda**  
-**Jamil Kazimzade**
+- **Zubin Sood**  
+- **Rithvik Banda**  
+- **Jamil Kazimzade**
 
 ---
 
 ## 🎯 Project Overview
 
-The objective is to predict:
+The task is to classify soccer video clips into:
 
-- **Foul Severity** (0–3)  
-- **Foul Type** (11 classes, dynamically discovered in annotations)
+### 1. Foul Severity (4 classes)
 
-using multi-view video clips from the **SoccerNet MV-Foul** dataset.
+- 0 — No Offence  
+- 1 — Offence + No Card  
+- 2 — Offence + Yellow  
+- 3 — Offence + Red  
 
-Our project involves:
+### 2. Foul Type (8–11 classes)
 
-1. Recreating the **baseline single-view model** described in MVNetwork.  
-2. Extending it to a **multi-view fusion architecture**.  
-3. Running controlled experiments comparing:
-   - pretrained vs non-pretrained backbones  
-   - different fusion approaches  
-   - hyperparameter variations  
-4. Publishing a polished project webpage summarizing:
-   - dataset insights  
-   - model architecture diagrams  
-   - performance metrics  
-   - visualizations  
-   - downloadable code & checkpoints  
+From annotations, including: Tackling, Standing Tackling, High Leg, Holding, Pushing, Elbowing, Challenge, Dive, etc.
+
+Class count varies slightly due to real annotations, so our loader **dynamically expands** classes when new “Action class” labels appear.
+
+**Main metric:** Balanced Accuracy (mean recall across classes).
 
 ---
 
 ## 📦 Downloading the SoccerNet MV-Foul Dataset
 
-### 1️⃣ Sign the SoccerNet NDA  
+1️⃣ **Sign the SoccerNet NDA**  
+Required to access MV-Foul videos:  
+https://www.soccer-net.org/data  
 
-Required for access to MV-Foul videos.  
-Apply via: https://www.soccer-net.org/data  
-
-### 2️⃣ Install the SoccerNet API  
+2️⃣ **Install the SoccerNet API**
 
     pip install SoccerNet --upgrade
 
-### 3️⃣ Download the dataset splits
+3️⃣ **Download the train/valid splits**
 
     python3 scripts/download_train.py
     python3 scripts/download_valid.py
 
-### 4️⃣ Set the dataset directory  
-
-Before running the download scripts, edit them and set:
+Before running these scripts, edit them and set:
 
     data_dir = "/path/to/SoccerNetData"
 
 ---
 
-# ✅ Baseline (Single-View ResNet18, Pretrained)
+# ✅ Single-View Baseline (ResNet18)
 
 **Setup:**
 
-- Train samples: **1000**  
-- Val samples: **300**  
-- Frames per clip: **16**  
-- Batch size: **4**  
-- Epochs: **5**  
-- Backbone: **ResNet18 (ImageNet pretrained)**  
-- Heads: **severity (4 classes)**, **foul type (11 classes)**  
-- Device: **MPS (Mac)**  
+- Train samples: 1000  
+- Validation samples: 300  
+- Frames per clip: 16  
+- Batch size: 4  
+- Epochs: 5  
+- Backbone: ResNet18 (ImageNet pretrained)  
+- Device: MPS (Mac)  
 
-**Best validation window: Epochs 1–3**
+### Best Validation Window (Epochs 1–3)
 
-| Epoch | Val Loss | Severity Balanced Acc | Foul Type Balanced Acc |
-|-------|----------|------------------------|-------------------------|
-| **1** | **3.0287** | **0.2430**           | **0.0855**              |
-| **2** | 3.1253   | 0.2913                | 0.0884                  |
-| **3** | 3.2278   | 0.2864                | 0.0900                  |
+| Epoch | Val Loss | Severity BalAcc | Foul Type BalAcc |
+|-------|----------|------------------|-------------------|
+| 1     | 3.0287   | 0.2430           | 0.0855            |
+| 2     | 3.1253   | 0.2913           | 0.0884            |
+| 3     | 3.2278   | 0.2864           | 0.0900            |
 
-The model begins to **overfit after Epoch 3**, so Epochs 1–3 represent the *true* single-view baseline that we will compare against later.
+The model starts to overfit after epoch 3, so we treat epochs 1–3 as the **clean single-view baseline**.
 
 ---
 
-## ▶️ Running the Baseline Training
+## ▶️ Run Single-View Training
 
     python3 code/train_baseline.py \
       --data_root "/path/to/SoccerNetData/mvfouls" \
@@ -139,47 +136,104 @@ The model begins to **overfit after Epoch 3**, so Epochs 1–3 represent the *tr
       --max_val_samples 300 \
       --use_pretrained
 
+This writes a checkpoint:
+
+    results/baseline_best.pth   (ignored by git)
+
+A summary of this run is logged in:
+
+- `results/baseline_run1.md`
+
+---
+
+# 🎥 Multi-View Baseline (2-View Average Fusion)
+
+The multi-view baseline extends the single-view architecture to use **multiple camera views** per foul event:
+
+1. Load multiple synchronized clips for each action (e.g., main camera + close-up).  
+2. Pass each view through a shared ResNet18 backbone.  
+3. Average the per-view features to obtain a fused clip descriptor.  
+4. Feed the fused representation into two heads:
+   - severity head (4 classes)  
+   - foul type head (N classes from annotations)  
+
+**Training setup:**
+
+- Views per action: 2  
+- Frames per view: 16  
+- Train samples: 1000  
+- Validation samples: 300  
+- Batch size: 2  
+- Epochs: 3  
+- Backbone: ResNet18 (ImageNet pretrained)  
+
+### Validation Performance (3 Epochs)
+
+| Epoch | Val Loss | Severity BalAcc | Foul Type BalAcc |
+|-------|----------|------------------|-------------------|
+| 1     | 3.2196   | 0.2383           | 0.0810            |
+| 2     | 3.1427   | 0.2737           | 0.0928            |
+| 3     | 2.9233   | 0.2548           | 0.1091            |
+
+The multi-view baseline shows **improved foul-type balanced accuracy** compared to the single-view model, supporting the intuition that using multiple camera views helps classify the type of foul.
+
+---
+
+## ▶️ Run Multi-View Training
+
+    python3 code/train_multiview.py \
+      --data_root "/path/to/SoccerNetData/mvfouls" \
+      --epochs 3 \
+      --batch_size 2 \
+      --num_frames 16 \
+      --num_views 2 \
+      --max_train_samples 1000 \
+      --max_val_samples 300 \
+      --use_pretrained
+
 This produces:
 
-    results/baseline_best.pth
-
-which stores the best-performing checkpoint.
+- `results/multiview_best.pth`   (ignored by git)  
+- `results/multiview_run1.md`    (validation metrics per epoch)
 
 ---
 
 ## 🧪 Debug / Utility Scripts
 
-### Inspect annotation structure
+**Inspect annotation file structure**
 
-    python3 code/inspect_annotations.py --root /path/to/SoccerNetData/mvfouls
+    python3 code/inspect_annotations.py
 
-### Test dataset loading
+**Test single-view dataset loading**
 
     python3 code/test_dataset.py
 
-### Test model output shapes
+**Test single-view model shapes**
 
     python3 code/test_model_shapes.py
+
+**Test multi-view dataset loading**
+
+    python3 code/test_multiview_dataset.py
+
+**Test multi-view model shapes**
+
+    python3 code/test_multiview_model_shapes.py
 
 ---
 
 ## 🌐 Final Project Website
 
-The final website (in `website/`) will contain:
-
-- Proposal  
-- Midterm report  
-- Baseline model & results  
-- Multi-view improvements  
-- Architecture diagrams  
-- Result visualizations  
-- Final discussion + future work  
-- Downloadable code & checkpoints  
-
-> **Important:** The webpage must not be modified after the official Canvas due date.
+TODO
 
 ---
 
-## ✔ README Complete
+## ✔ README Status
 
-This README reflects the current state of the repository, the completed single-view baseline, and how to reproduce the main experiments.
+This README reflects the current state of the project:
+
+- single-view baseline implemented and trained  
+- multi-view baseline implemented and trained  
+- result logs for both baselines  
+- clear instructions to download data and rerun experiments  
+- code / scripts layout
