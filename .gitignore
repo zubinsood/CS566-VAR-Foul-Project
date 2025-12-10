@@ -1,8 +1,17 @@
 # Ignore dataset
 mvfouls/
 SoccerNetData/
+data_temp/
+
+# Ignore large video files (training data)
 *.mp4
 *.zip
+
+# But allow website assets
+!website/assets/*.mp4
+!website/assets/*.jpg
+
+# Model checkpoints
 results/*.pth
 
 # Python cache files
