@@ -224,7 +224,7 @@ This produces:
 
 ## 🌐 Final Project Website
 
-TODO
+(https://zubinsood.github.io/CS566-VAR-Foul-Project/index.html)
 
 ---
 
