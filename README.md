@@ -228,6 +228,40 @@ TODO
 
 ---
 
+v
+## 🎨 Visual Interface
+
+**Launch interactive web interface for model visualization**
+
+    python3 code/gradio_interface.py \
+      --data_root "data/mvfouls" \
+      --checkpoint "results/baseline_best.pth" \
+      --split valid \
+      --port 7860
+
+The interface allows you to:
+- Browse through dataset samples with a slider
+- See real-time predictions for foul severity and type
+- Compare predictions with ground truth labels
+- View video clips with overlaid predictions
+- See probability distributions for all classes
+
+**Requirements:**
+- Install Gradio: `pip install gradio`
+- Optional: Install OpenCV for video overlay: `pip install opencv-python`
+
+**Visual inference script (static images)**
+
+    python3 code/visual_inference.py \
+      --data_root "data/mvfouls" \
+      --checkpoint "results/baseline_best.pth" \
+      --split valid \
+      --num_samples 5 \
+      --save_dir "figures/inference"
+
+---
+
+
 ## ✔ README Status
 
 This README reflects the current state of the project:
