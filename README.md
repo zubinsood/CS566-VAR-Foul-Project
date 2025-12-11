@@ -1,4 +1,5 @@
 # 📘 CS566 — VAR Foul Recognition (SoccerNet MV-Foul)
+[Presentation](https://youtu.be/SjkTu-eWUXA)
 
 This repository contains our final project for **CS566: Computer Vision**, where we implement and experiment with the **SoccerNet Multi-View Foul Recognition** task.
 
@@ -11,7 +12,6 @@ Our work includes:
 - utilities for inspecting annotations  
 - result logs  
 - a final project website  
-
 ---
 
 ## 📁 Repository Structure
